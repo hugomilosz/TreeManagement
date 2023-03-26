@@ -66,15 +66,15 @@ public class TreeTransformer {
   public static String checkTrees(HashMap<Integer, ArrayList<Integer>> tree1, HashMap<Integer, ArrayList<Integer>> tree2) {
     Set<Integer> initialNodes = tree1.keySet();
     Set<Integer> finalNodes = tree2.keySet();
-    Set<Integer> nodesCopy = Set.copyOf(initialNodes); // make a copy of the initial nodes set
-    Set<Integer> finalNodesCopy = Set.copyOf(finalNodes); // make a copy of the initial nodes set
+    Set<Integer> nodesCopy = Set.copyOf(initialNodes);
+    Set<Integer> finalNodesCopy = Set.copyOf(finalNodes);
 
     StringBuilder sb = new StringBuilder ();
 
-    for (Integer node : nodesCopy) { // iterate over the copy of the set
+    for (Integer node : nodesCopy) {
       ArrayList<Integer> initialLeaves = tree1.get(node);
       ArrayList<Integer> finalLeaves = tree2.get(node);
-      if (finalLeaves != null) { // add null check here
+      if (finalLeaves != null) {
         for (Integer leaf : initialLeaves) {
           if (!finalLeaves.contains(leaf)) {
             removeNode(tree1, leaf, sb);
@@ -83,10 +83,10 @@ public class TreeTransformer {
       }
     }
 
-    for (Integer node : finalNodesCopy) { // iterate over the copy of the set
+    for (Integer node : finalNodesCopy) {
       ArrayList<Integer> initialLeaves = tree1.get(node);
       ArrayList<Integer> finalLeaves = tree2.get(node);
-      if (initialLeaves != null) { // add null check here
+      if (initialLeaves != null) {
         for (Integer leaf : finalLeaves) {
           if (!initialLeaves.contains(leaf)) {
             sb.append("ADD(" + node.toString() + "," + leaf.toString() + "), ");
