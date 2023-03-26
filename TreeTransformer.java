@@ -47,6 +47,7 @@ public class TreeTransformer {
     return data;
   }
 
+  // Translates file string into a map from nodes to leaves
   public static void stringToMap(String inputFile, HashMap<Integer, ArrayList<Integer>> map) {
     String[] array = inputFile.split("\\[");
     for (String s : array) {
@@ -71,6 +72,7 @@ public class TreeTransformer {
 
     StringBuilder sb = new StringBuilder ();
 
+    // Goes through each of the leaves in the first tree and if they're not leaves in the second tree, they're removed from the tree 
     for (Integer node : nodesCopy) {
       ArrayList<Integer> initialLeaves = tree1.get(node);
       ArrayList<Integer> finalLeaves = tree2.get(node);
@@ -83,6 +85,7 @@ public class TreeTransformer {
       }
     }
 
+    // Goes through each of the leaves in the second tree and if they're not leaves in the first tree, they're added to the tree
     for (Integer node : finalNodesCopy) {
       ArrayList<Integer> initialLeaves = tree1.get(node);
       ArrayList<Integer> finalLeaves = tree2.get(node);
@@ -94,6 +97,7 @@ public class TreeTransformer {
         }
       }
     }
+     // deletes the final ", " from the string builder
     int len = sb.length();
     if (len > 0) {
       sb.deleteCharAt(len - 2);
@@ -101,6 +105,7 @@ public class TreeTransformer {
     return sb.toString();
   }
 
+  // Recurses through the leaves of the node to be removed
   public static void removeNode(HashMap<Integer, ArrayList<Integer>> map, Integer node, StringBuilder sb) {
     if (map.containsKey(node)) {
       ArrayList<Integer> nodes = map.get(node);
