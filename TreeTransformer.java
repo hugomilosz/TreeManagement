@@ -63,12 +63,13 @@ public class TreeTransformer {
   public static String checkTrees(HashMap<Integer, ArrayList<Integer>> tree1, HashMap<Integer, ArrayList<Integer>> tree2) {
     Set<Integer> initialNodes = tree1.keySet();
     Set<Integer> finalNodes = tree2.keySet();
-    Set<Integer> nodesCopy = Set.copyOf(initialNodes); // make a copy of the initial nodes set
-    Set<Integer> finalNodesCopy = Set.copyOf(finalNodes); // make a copy of the initial nodes set
+    Set<Integer> nodesCopy = Set.copyOf(initialNodes);
+    Set<Integer> finalNodesCopy = Set.copyOf(finalNodes);
 
     StringBuilder sb = new StringBuilder ();
 
-    for (Integer node : nodesCopy) { // iterate over the copy of the set
+    // copies iterated over to avoid Concurrent Modification
+    for (Integer node : nodesCopy) {
       ArrayList<Integer> initialLeaves = tree1.get(node);
       ArrayList<Integer> finalLeaves = tree2.get(node);
       if (finalLeaves != null && initialLeaves != null) {
@@ -80,7 +81,8 @@ public class TreeTransformer {
       }
     }
 
-    for (Integer node : finalNodesCopy) { // iterate over the copy of the set
+    // Adds the ADDs if the nodes/leaves are not already in the tree
+    for (Integer node : finalNodesCopy) {
       ArrayList<Integer> initialLeaves = tree1.get(node);
       ArrayList<Integer> finalLeaves = tree2.get(node);
       for (Integer leaf : finalLeaves) {
