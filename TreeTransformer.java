@@ -1,9 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 public class TreeTransformer {
 
@@ -47,7 +44,6 @@ public class TreeTransformer {
     return data;
   }
 
-  // Translates file string into a map from nodes to leaves
   public static void stringToMap(String inputFile, HashMap<Integer, ArrayList<Integer>> map) {
     String[] array = inputFile.split("\\[");
     for (String s : array) {
@@ -67,17 +63,16 @@ public class TreeTransformer {
   public static String checkTrees(HashMap<Integer, ArrayList<Integer>> tree1, HashMap<Integer, ArrayList<Integer>> tree2) {
     Set<Integer> initialNodes = tree1.keySet();
     Set<Integer> finalNodes = tree2.keySet();
-    Set<Integer> nodesCopy = Set.copyOf(initialNodes);
-    Set<Integer> finalNodesCopy = Set.copyOf(finalNodes);
+    Set<Integer> nodesCopy = Set.copyOf(initialNodes); // make a copy of the initial nodes set
+    Set<Integer> finalNodesCopy = Set.copyOf(finalNodes); // make a copy of the initial nodes set
 
     StringBuilder sb = new StringBuilder ();
 
-    // Goes through each of the leaves in the first tree and if they're not leaves in the second tree, they're removed from the tree 
-    for (Integer node : nodesCopy) {
+    for (Integer node : nodesCopy) { // iterate over the copy of the set
       ArrayList<Integer> initialLeaves = tree1.get(node);
       ArrayList<Integer> finalLeaves = tree2.get(node);
-      if (finalLeaves != null) {
-        for (Integer leaf : initialLeaves) {
+      if (finalLeaves != null && initialLeaves != null) {
+        for (Integer leaf : new ArrayList<>(initialLeaves)) {
           if (!finalLeaves.contains(leaf)) {
             removeNode(tree1, leaf, sb);
           }
@@ -85,19 +80,15 @@ public class TreeTransformer {
       }
     }
 
-    // Goes through each of the leaves in the second tree and if they're not leaves in the first tree, they're added to the tree
-    for (Integer node : finalNodesCopy) {
+    for (Integer node : finalNodesCopy) { // iterate over the copy of the set
       ArrayList<Integer> initialLeaves = tree1.get(node);
       ArrayList<Integer> finalLeaves = tree2.get(node);
-      if (initialLeaves != null) {
-        for (Integer leaf : finalLeaves) {
-          if (!initialLeaves.contains(leaf)) {
-            sb.append("ADD(" + node.toString() + "," + leaf.toString() + "), ");
-          }
+      for (Integer leaf : finalLeaves) {
+        if (initialLeaves == null || !initialLeaves.contains(leaf)) {
+          sb.append("ADD(" + node.toString() + "," + leaf.toString() + "), ");
         }
       }
     }
-     // deletes the final ", " from the string builder
     int len = sb.length();
     if (len > 0) {
       sb.deleteCharAt(len - 2);
@@ -105,17 +96,22 @@ public class TreeTransformer {
     return sb.toString();
   }
 
-  // Recurses through the leaves of the node to be removed
   public static void removeNode(HashMap<Integer, ArrayList<Integer>> map, Integer node, StringBuilder sb) {
     if (map.containsKey(node)) {
-      ArrayList<Integer> nodes = map.get(node);
+      ArrayList<Integer> nodes = new ArrayList<>(map.get(node)); // create a copy of the list
       for (Integer n : nodes) {
         removeNode(map, n, sb);
       }
     }
-    map.remove(node);
     sb.append("REMOVE(" + node.toString() + "), ");
+    map.remove(node);
+    // remove the node from all values in the map
+    for (ArrayList<Integer> leaves : map.values()) {
+      leaves.remove(node);
+    }
   }
+
+
 
 
 }
